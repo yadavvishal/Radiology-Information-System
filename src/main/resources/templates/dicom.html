@@ -1,0 +1,82 @@
+
+<!--  ==================== CORNERSTONE DICOM VIEWER IMPLEMENTATION ============  -->
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/user/cornerstone.min.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container">
+
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <input type="file" id="selectFile" >
+            </div>
+        </form>
+    </div>
+
+    <div style="width:512px;height:512px;position:relative;color: white;display:inline-block;border-style:solid;border-color:black;"
+         oncontextmenu="return false"
+         class='disable-selection noIbar'
+         unselectable='on'
+         onselectstart='return false;'
+         onmousedown='return false;'>
+        <div id="dicomImage"
+             style="width:512px;height:512px;top:0px;left:0px; position:absolute">
+        </div>
+    </div>
+</div>
+</body>
+
+
+<!-- jquery - currently a dependency and thus required for using cornerstoneWADOImageLoader -->
+<script src="/user/jquery.min.js"></script>
+
+<!-- include the cornerstone library -->
+<script src="/user/cornerstone.min.js"></script>
+
+<!-- include the dicomParser library as the WADO image loader depends on it -->
+<script src="/user/dicomParser.min.js"></script>
+
+<!-- include the cornerstoneWADOImageLoader library -->
+<script src="/user/cornerstoneWADOImageLoader.min.js"></script>
+<script src="/user/cornerstoneFileImageLoader.js"></script>
+<!-- jpeg 2000 codec -->
+<script src="/user/jpx.min.js"></script>
+
+<script>
+
+
+    $(document).ready(function() {
+
+        var element = $('#dicomImage').get(0);
+        cornerstone.enable(element);
+
+        // Listen for the change event on our input element so we can get the
+        // file selected by the user
+        $('#selectFile').on('change', function(e) {
+            // Add the file to the cornerstoneFileImageLoader and get unique
+            // number for that file
+            var file = e.target.files[0];
+            var index = cornerstoneFileImageLoader.addFile(file);
+
+            // create an imageId for this image
+            var imageId = "dicomfile://" + index;
+
+            // load and display this image into the element
+            var element = $('#dicomImage').get(0);
+            cornerstone.loadImage(imageId).then(function(image) {
+                cornerstone.displayImage(element, image);
+            });
+
+        });
+
+    });
+
+</script>
+</html>

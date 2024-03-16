@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DICOM FILE STATUS</title>
+    <link rel="stylesheet"
+	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	      crossorigin="anonymous">
+   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .btn-download {
+            margin-top: 15px;
+        }
+        .image-data-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+        .image-container, .data-container {
+            flex: 1;
+            max-width: 48%;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            background-color: #f9f9f9;
+            margin-right: 2%;
+            padding: 10px;
+            overflow: hidden;
+        }
+        /* Style for the image within the container */
+        .image-container img {
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container my-2">
+  
+    <h1> Dicom Status</h1>
+    
+    <!-- File Upload form -->
+    <form th:action="@{/user/uploadFile/{id}(id=${data.id})}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".dcm"/>
+        <input type="hidden" name="uploadDate" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" />
+        <button type="submit" class="btn btn-primary">
+            <span th:if="${data.fileUploaded}">Update File</span>
+            <span th:unless="${data.fileUploaded}">Upload File</span>
+        </button>
+    </form>
+    
+    <!-- Display the DICOM image and data side by side  -->
+    <div th:if="${data.fileUploaded}" class="image-data-container">
+        <div class="image-container">
+            <img th:src="@{/user/test/{id}(id=${data.id})}" alt="DICOM Image">
+        </div>
+        <div class="data-container">
+            <h2>Dicom File Data</h2>
+            <table class="table">
+                <tr>
+                    <td><strong>Attribute</strong></td>
+                    <td><strong>Value</strong></td>
+                </tr>           
+                
+                <tr>
+                    <td><strong>Id</strong></td>
+                    <td th:text="${data.mid}"></td>
+                </tr>
+                
+                
+                
+                <tr>
+                    <td><strong>Age</strong></td>
+                    <td th:text="${data.mage}"></td>
+                </tr>
+                <tr>
+                    <td><strong>Gender</strong></td>
+                    <td th:text="${data.mgender}"></td>
+                </tr>
+                
+                
+                <tr>
+                    <td><strong>Study Upload Date</strong></td>
+                    <td th:text="${data.mstudyDate.substring(0, 4) + '-' + data.mstudyDate.substring(4, 6) + '-' + data.mstudyDate.substring(6)}"></td>
+                </tr>                
+
+            </table>
+        </div>
+    </div>
+    
+    <a th:unless="${data.fileUploaded}">
+        <span class="glyphicon glyphicon-remove"></span> No File Available
+    </a>
+    
+    <!-- Back button  -->
+    <a th:href="@{/user/}" class="btn btn-primary mt-3">Back to Patient List</a>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+</head>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+<style>
+    body{
+       font-family: 'Baloo 2', cursive;
+        width: 500px;
+        height: 100%;
+     background: url("https://images.pexels.com/photos/281260/pexels-photo-281260.jpeg?auto=compress&cs=tinysrgb&w=600");
+     color: white;
+     margin: 0px;
+     padding: 0px;
+    }
+    .left{
+        display: inline-block;
+        /*border: 2px solid red;*/
+        position: absolute;
+        left:60px;
+        top: 20px;
+    }
+    .left img{
+        width: 136px;
+        filter:invert(100%);
+    
+    }
+    .left div{
+        line-height: 19px;
+        font-size: 26px;
+        text-align: center;
+    }
+
+    .mid{
+        position: absolute;
+        right: 34px;
+        top: 43px;
+        display: inline-block;
+        font-size: 20px;
+    }
+    .navbar{
+        display: inline-block;
+    }
+    .navbar li{
+        display: inline-block;
+    }
+    .navbar li a{
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+    }
+    .navbar li a:hover, .navbar li a:active{
+         text-decoration: underline;
+         color:grey;
+    }
+
+     .container{
+        /*border: 2px solid white;*/
+        margin: 106px 280px;
+        padding: 100px;
+        width: 100%;
+        /*border-radius: 28px;*/
+    } 
+    .container h1{
+        text-align: center;
+    }
+    
+   
+
+</style>
+<body>
+    <header class="header">
+        
+        <div class="mid">
+            <ul class="navbar">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="signin">Login</a></li>
+                <li><a href="register">Register</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Welcome to  RIS Application</h1>
+    </div>
+    
+</body>
+</html>
+

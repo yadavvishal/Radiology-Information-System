@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Patient's List</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous">
+	
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    /* Custom CSS for center-aligning the heading */
+    .center-heading {
+        text-align: center;
+        margin-top: 20px; /* Adjust the margin-top as needed */
+    }
+</style>
+
+</head>
+
+ <body>
+	
+ <div th:if="${error}" class="alert alert-danger">
+    <p th:text="${error}"></p>
+</div>
+	 
+	 
+	<div class="container my-2">
+	<h1 class="center-heading">Patient's List</h1>
+	
+<div class="text-right"> <!-- Adding a class to align contents to the right -->
+    <a th:href="@{/user/patient}" class="btn btn-primary btn-sm mb-3">Add Patient</a>
+    	                   <a href = "/logout">
+	                       <button class="btn btn-primary btn-sm mb-3">Log Out</button>                       
+	                       </a>	
+</div>
+	
+   <div class = "search-container my-3">
+		        
+    <div class="row">
+        <div class="col">
+            <input onkeyup="search()" id="search-patientName" type="text" class="form-control" placeholder="Search by Patient Name"/>
+        </div>
+        <div class="col">
+            <input onkeyup="search()" id="search-id" type="text" class="form-control" placeholder="Search by Patient ID"/>
+        </div>
+        <div class="col">
+            <input onkeyup="search()" id="search-email" type="text" class="form-control" placeholder="Search by Email Address"/>
+        </div>
+        
+         <div class="col">
+            <button onclick="clearFilters()" class="btn btn-secondary">Clear</button>
+            <button onclick="resetFilters()" class="btn btn-primary">Reset</button>
+        </div>
+        
+    </div>
+		 
+		 <div class="search-result">
+		       
+		 </div> 
+	 </div>
+	
+	<table border="1" class = "table table-striped table-responsive-md">
+			<thead>
+				<tr>
+                <th>
+                  <a th:href="@{'/user/page/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">
+                        <span th:class="${sortField == 'id' ? (sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></span>
+                        Id
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/user/page/' + ${currentPage} + '?sortField=patientName&sortDir=' + ${reverseSortDir}}">
+                        <span th:class="${sortField == 'patientName' ? (sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></span>
+                        Patient Name
+                    </a>
+                </th>
+					<th>Gender</th>
+					<th>
+                         Email
+					</th>
+					
+					  <th>Date of Birth</th>
+					 
+		             <th>Dicom</th>
+		             
+		             <th>
+                  <a th:href="@{'/user/page/' + ${currentPage} + '?sortField=uploadDate&sortDir=' + ${reverseSortDir}}">
+                        <span th:class="${sortField == 'uploadDate' ? (sortDir == 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down') : 'fas fa-sort'}"></span>
+                        Upload Date
+                    </a>
+					 </th>
+					
+					<th> Actions </th>
+				</tr>
+			</thead>	
+		   <tbody>
+			  <tr th:each="data : ${listData}">
+				  <td th:text="${data.id}"></td>
+				  <td th:text="${data.patientName}"></td>
+				  <td th:text="${data.gender}"></td>
+				  <td th:text="${data.email}"></td>
+				  <td th:text="${data.dateOfBirth}"></td>
+				  
+			 <td>
+             	 <a th:href="@{/user/fupload/{id}(id=${data.id})}" class="btn btn-primary">Status</a>
+         <span th:if="${data.fileUploaded}" style="color: green;">&#10004;</span>
+        <span th:unless="${data.fileUploaded}" style="color: red;">&#10008;</span>        
+			  </td>
+			  
+				  <td th:text="${data.uploadDate}"></td>			  
+			  
+					<td> <a th:href="@{/user/update/{id}(id=${data.id})}" class="btn btn-primary">Update</a>
+					    <a th:href="@{/user/delete/{id}(id=${data.id})}" class="btn btn-danger">Delete</a>
+					</td>
+				  
+			  </tr>
+		  </tbody>        
+	</table>
+		<div th:if = "${totalPages > 1}">
+			<div class = "row col-sm-10">
+				<div class = "col-sm-2">
+					Total Rows: [[${totalItems}]] 
+				</div>
+				<div class = "col-sm-1">
+					<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+						<a th:if="${currentPage != i}" th:href="@{'/user/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+						<span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+				</div>
+				<div class = "col-sm-1">
+					<a th:if="${currentPage < totalPages}" th:href="@{'/user/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+					<span th:unless="${currentPage < totalPages}">Next</span>
+				</div>
+				
+				 <div class="col-sm-1">
+    				<a th:if="${currentPage < totalPages}" th:href="@{'/user/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+					<span th:unless="${currentPage < totalPages}">Last</span>
+   				 </div>
+			</div>
+		</div>
+	</div>	
+	
+	
+	  <script>
+		  
+		  
+      // JavaScript function to clear filters    
+    function clearFilters() {
+        document.getElementById('search-patientName').value = '';
+        document.getElementById('search-id').value = '';
+        document.getElementById('search-email').value = '';
+    }
+
+    // JavaScript function to reset filters
+    function resetFilters() {
+        document.getElementById('search-patientName').value = '';
+        document.getElementById('search-id').value = '';
+        document.getElementById('search-email').value = '';
+        search(); // Trigger the search function to update the results
+    }
+  
+             function search() {
+            // Getting user input for each criteria
+            var patientName = document.getElementById('search-patientName').value.toLowerCase();
+            var id = document.getElementById('search-id').value.toLowerCase();
+            var email = document.getElementById('search-email').value.toLowerCase();
+            
+            // Getting table rows
+            var rows = document.querySelectorAll('tbody tr');
+
+            // Looping through table rows
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var rowPatientName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                var rowId = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                var rowEmail = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+
+                // Checking if the row matches all input criteria
+                if (rowPatientName.includes(patientName) && rowId.includes(id) && rowEmail.includes(email)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none'; // Hiding the row
+                }
+            }
+        }   
+    </script> 	  
+ </body>
+</html>
